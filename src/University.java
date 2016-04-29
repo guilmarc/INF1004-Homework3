@@ -1,8 +1,11 @@
 import java.io.*;
 import java.util.ArrayList;
 
-/**
- * Created by guilmarc on 2016-03-31.
+/*
+    INF1004 Structure de données et algoritmes Devoir 3
+    Auteurs : Marco Guilmette, Jala Aymeric, Mathieu Larouche
+
+    Classe University : Représente l'université
  */
 public class University {
 
@@ -10,31 +13,63 @@ public class University {
     private final String COURSES_FILE = "courses.dat";
     private final String STUDENTS_FILE = "students.dat";
 
-    public ArrayList<Student> students = new ArrayList<Student>();
-    public ArrayList<Course> courses = new ArrayList<Course>();
+    private ArrayList<Student> students = new ArrayList<Student>();
+    private ArrayList<Course> courses = new ArrayList<Course>();
 
+
+    public ArrayList<Student> getStudents() {
+        return students;
+    }
+
+    public ArrayList<Course> getCourses() {
+        return courses;
+    }
+
+    /*
+            Méthode addStudent(Student newStudent)
+            Ajoute un étudiant.
+
+            Input : newStudent
+            Retour : void.
+         */
     public void addStudent(Student newStudent) {
         students.add(newStudent);
     }
 
+
+    /*
+        Méthode addCourse(Course newCourse)
+        Ajoute un cours.
+
+        Input : newCourse
+        Retour : void.
+     */
     public void addCourse(Course newCourse) {
         courses.add(newCourse);
     }
 
+
+    /*
+        Méthode showCoursesForStudentIndex(int studentIndex)
+        Affiche la liste des cours d'un certain étudiant.
+
+        Input : Index de l`étudiant.
+        Retour : void
+     */
     public void showCoursesForStudentIndex(int studentIndex) {
 
         try {
             Student student = students.get(studentIndex);
 
-            Link current = student.firstCourse;
+            Link current = student.getFirstCourse();
 
             System.out.println("Liste des cours de " + student.toString());
             System.out.println("****************************************************************************");
 
             while (current != null) {
-                Course course = courses.get(current.courseIndex);
+                Course course = courses.get(current.getCourseIndex());
                 System.out.println(course.toString());
-                current = current.nextCourse;
+                current = current.getNextCourse();
             }
 
             System.out.println();
@@ -46,21 +81,29 @@ public class University {
 
     }
 
+
+    /*
+        Méthode showStudentsForCourseIndex(int courseIndex)
+        Affiche les étudiants d'un certain cours.
+
+        Input : Index du cours.
+        Retour : void.
+     */
     public void showStudentsForCourseIndex(int courseIndex) {
 
         try {
 
             Course course = courses.get(courseIndex);
 
-            Link current = course.firstStudent;
+            Link current = course.getFirstStudent();
 
             System.out.println("Liste des étudiants de " + course.toString());
             System.out.println("****************************************************************************");
 
             while (current != null) {
-                Student student = students.get(current.studentIndex);
+                Student student = students.get(current.getStudentIndex());
                 System.out.println(student.toString());
-                current = current.nextStudent;
+                current = current.getNextStudent();
             }
 
             System.out.println();
@@ -75,6 +118,14 @@ public class University {
         this.addInscription(studentIndex, newCourseIndex);
     }
 
+
+/*
+    Méthode addInscription(int studentIndex, int courseIndex)
+    Ajoute une inscription (Link) entre un étudiant et un cours.
+
+    Input : Index de l'étudiant, index du cours
+    Retour : true si l'inscription s'est effectuée avec succès; false sinon
+ */
     public boolean addInscription(int studentIndex, int courseIndex) {
 
         if (this.findInscription( studentIndex, courseIndex) == null) {
@@ -89,14 +140,14 @@ public class University {
                 if (course.available()) {
 
                     //Insert the new course for the selected student
-                    newLink.nextCourse = student.firstCourse;
-                    student.firstCourse = newLink;
+                    newLink.setNextCourse(student.getFirstCourse()) ;
+                    student.setFirstCourse(newLink);
 
                     //Insert the new student for the selected course
-                    newLink.nextStudent = course.firstStudent;
-                    course.firstStudent = newLink;
+                    newLink.setNextStudent(course.getFirstStudent()) ;
+                    course.setFirstStudent(newLink);
 
-                    course.numberOfInscriptions++;
+                    course.incrementNumberOfInscription();
                     return true;
 
                 } else {
@@ -113,6 +164,14 @@ public class University {
         }
     }
 
+
+    /*
+        Méthode  removeInscription(int studentIndex, int courseIndex)
+        Retire une inscription. ()
+
+        Input : Index de l'étudiant, index du cours
+        Retour : true si l'opération s'est effectuée avec succès; false sinon
+     */
     public boolean removeInscription(int studentIndex, int courseIndex) {
         Link removedCourse = this.removeCourseForStudentIndex(studentIndex, courseIndex);
         Link removedStudent = this.removeStudentForCourseIndex(courseIndex, studentIndex);
@@ -120,27 +179,35 @@ public class University {
         return ((removedCourse != null) && (removedStudent != null));
     }
 
+
+    /*
+        Méthode removeCourseForStudentIndex(int studentIndex, int courseIndex)
+        Retire un cours d'un étudiant
+
+        Input : Index de l'étudiant
+        Retour : Link current : Position du cours précédant le cours supprimé.
+     */
     private Link removeCourseForStudentIndex(int studentIndex, int courseIndex) {
 
         try {
             Student student = students.get(studentIndex);
 
-            Link current = student.firstCourse;
-            Link previous = student.firstCourse;
+            Link current = student.getFirstCourse();
+            Link previous = student.getFirstCourse();
 
-            while (current.courseIndex != courseIndex) {
-                if (current.nextCourse == null) {
+            while (current.getCourseIndex() != courseIndex) {
+                if (current.getNextCourse() == null) {
                     return null;
                 } else {
                     previous = current;
-                    current = current.nextCourse;
+                    current = current.getNextCourse();
                 }
             }
 
-            if (current == student.firstCourse) {
-                student.firstCourse = student.firstCourse.nextCourse;
+            if (current == student.getFirstCourse()) {
+                student.setFirstCourse(student.getFirstCourse().getNextCourse());
             } else {
-                previous.nextCourse = current.nextCourse;
+                previous.setNextCourse(current.getNextCourse());
             }
 
             return current;
@@ -150,28 +217,38 @@ public class University {
         }
     }
 
+
+    /*
+        Méthode removeStudentForCourseIndex(int courseIndex, int studentIndex)
+        Retire un étudiant d'un certain cours.
+
+        Input : Index du cours, index de l'étudiant
+        Retour : Link current : Position de l'étudiant précédant l'étudiant supprimé.
+     */
     private Link removeStudentForCourseIndex(int courseIndex, int studentIndex) {
 
         try {
             Course course = courses.get(courseIndex);
 
-            Link current = course.firstStudent;
-            Link previous = course.firstStudent;
+            Link current = course.getFirstStudent();
+            Link previous = course.getFirstStudent();
 
-            while (current.studentIndex != studentIndex) {
-                if (current.nextStudent == null) {
+            while (current.getStudentIndex() != studentIndex) {
+                if (current.getNextStudent() == null) {
                     return null;
                 } else {
                     previous = current;
-                    current = current.nextStudent;
+                    current = current.getNextStudent();
                 }
             }
 
-            if (current == course.firstStudent) {
-                course.firstStudent = course.firstStudent.nextCourse;
+            if (current == course.getFirstStudent()) {
+                course.setFirstStudent(course.getFirstStudent().getNextCourse()) ;
             } else {
-                previous.nextStudent = current.nextStudent;
+                previous.setNextStudent(current.getNextStudent());
             }
+
+            course.decrementNumberOfInscription();
 
             return current;
         } catch (IndexOutOfBoundsException ex) {
@@ -180,29 +257,42 @@ public class University {
         }
     }
 
+
+    /*
+        Méthode findInscription(int studentIndex, int courseIndex)
+
+        Input : Index de l'étudiant, index du cours
+        Retour : Link current :
+     */
     public Link findInscription(int studentIndex, int courseIndex){
 
         Student student = students.get(studentIndex);
-        Link current = student.firstCourse;
+        Link current = student.getFirstCourse();
 
         if(current != null) {
-            while (current.courseIndex != courseIndex) {
-                if (current.nextCourse == null) {
+            while (current.getCourseIndex() != courseIndex) {
+                if (current.getNextCourse() == null) {
                     return null;
                 } else {
-                    current = current.nextCourse;
+                    current = current.getNextCourse();
                 }
             }
         }
         return current;
     }
 
+    //Sauvegarder les données dans un fichier.
     public void saveDataToFile(){
         saveCourses();
         saveStudents();
         saveInscriptions();
     }
 
+    /*
+        Méthode saveCourses()
+        Sauvegarde les cours dans un fichier
+        Méthode applée par la méthode saveDataToFile()
+     */
     public void saveCourses() {
         try (
                 OutputStream file = new FileOutputStream(COURSES_FILE);
@@ -216,6 +306,12 @@ public class University {
         }
     }
 
+
+    /*
+        Méthode saveStudents()
+        Sauvegarde des étudiants dans un fichier.
+        Méthode appellée par la méthode saveDataToFile().
+     */
     public void saveStudents() {
         try (
                 OutputStream file = new FileOutputStream(STUDENTS_FILE);
@@ -229,6 +325,12 @@ public class University {
         }
     }
 
+
+    /*
+        Méthode saveInscriptions ()
+        Sauvegarde les inscriptions dans un fichier
+        Méthode appellée par la méthode saveDataToFile()
+     */
     public void saveInscriptions() {
 
         try (
@@ -239,11 +341,11 @@ public class University {
             ArrayList<Link> links = new ArrayList<Link>();
 
             for (Student student : students) {
-                Link current = student.firstCourse;
+                Link current = student.getFirstCourse();
                 while (current != null) {
                     links.add(current);
                     //output.writeObject(current);
-                    current = current.nextCourse;
+                    current = current.getNextCourse();
                 }
             }
 
@@ -256,12 +358,18 @@ public class University {
 
     }
 
+    // Charge les données d'un fichier
     public void loadDataFromFile(){
         this.readStudents();
         this.readCourses();
         this.readInscriptions();
     }
 
+    /*
+        Méthode void readStudents()
+        Lis les étudiants depuis un fichier.
+        Méthode appellée par la méthode loadDataFromFile()
+     */
     public void readStudents() {
         try(
                 InputStream file = new FileInputStream(STUDENTS_FILE);
@@ -279,6 +387,12 @@ public class University {
         }
     }
 
+
+    /*
+        Méthode readCourses()
+        Lis les cours depuis un fichier.
+        Méthode appellée par la méthode loadDataFromFile()
+     */
     public void readCourses() {
         try(
                 InputStream file = new FileInputStream(COURSES_FILE);
@@ -296,6 +410,12 @@ public class University {
         }
     }
 
+
+    /*
+        Méthode readInscriptions()
+        Lis les inscriptions depuis un fichier
+        Appellée depuis la méthode loadDataFromFile()
+     */
     public void readInscriptions() {
         try(
                 InputStream file = new FileInputStream(INSCRIPTIONS_FILE);
@@ -307,7 +427,7 @@ public class University {
             ArrayList<Link> links = new ArrayList<Link>();
             links = (ArrayList<Link>)input.readObject();
             for (Link link : links) {
-                this.addInscription(link.studentIndex, link.courseIndex);
+                this.addInscription(link.getStudentIndex(), link.getCourseIndex());
             }
         }
         catch(ClassNotFoundException ex){
@@ -318,14 +438,19 @@ public class University {
         }
     }
 
+
+    /*
+        Méthode clearInscriptions()
+        Supprime toutes les inscriptions. "Remise à zéro"
+     */
     public void clearInscriptions(){
         for(Student student : this.students){
-            student.firstCourse = null;
+            student.setFirstCourse(null);
         }
 
         for (Course course : this.courses) {
-            course.firstStudent = null;
-            course.numberOfInscriptions = 0;
+            course.setFirstStudent(null);
+            course.setNumberOfInscriptions(0);
         }
     }
 

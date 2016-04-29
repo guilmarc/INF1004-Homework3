@@ -1,17 +1,32 @@
 import java.util.Scanner;
+/*
+        INF 1004 Structures de données et Algorithmes Devoir 3
+        Auteurs : Marco Guilmette, Jala Aymeric, Mathieu Larouche
 
+        Le programme permet : Inscription d’un étudiant à un cours,
+                              Annulation de l’inscription d’un étudiant à un cours,
+                              Modification de l’inscription : annuler une inscription à un cours et le réinscrire à un autre cours,
+                              Obtention de la liste des cours suivis par l’étudiant,
+                              Obtention de la liste des étudiants inscrits à un cours donné.
+                              Sauvegarde des informations relatives aux étudiants, aux cours et aux inscriptions dans des fichiers.
+                              Lecture des informations relatives aux étudiants, aux cours et aux inscriptions à partir des  fichiers.
+ */
 public class Homework3 {
 
-    static University university = new University();
+    private static University university = new University();
 
+
+    /*
+        Méthode main : Menu
+        La méthode fera appel à une autre méethode appropriée au traitement de la demande de l'utilisateur.
+
+        Input : Choix de l'utilisateur.
+        Retour : void.
+     */
     public static void main(String[] args) {
 
-        Homework3 homework3 = new Homework3();
-        //homework3.generateData();
 
-        //For test only
-        //university.showCoursesForStudentIndex(0);
-        //university.showStudentsForCourseIndex(18);
+        //Homework3.generateData();  //Uncomment this line to read data from code instead of file
 
         char menuInput;
         Scanner scanner = new Scanner(System.in);
@@ -52,15 +67,36 @@ public class Homework3 {
 
     }
 
-    public static void readDataFromFile() {
+    /*
+        Méthode readDataFromFile() : Lis les informations d'un fichier
+        Méthode appellée par la méthode main.
+
+        Retour : void.
+     */
+    private static void readDataFromFile() {
         university.loadDataFromFile();
     }
 
-    public static void saveDataToFile(){
+
+    /*
+        Méthode saveDataToFile() : Sauvegarde les données dans un fichier.
+        Méthode appellée par la méthode main.
+
+        Retour : void.
+     */
+    private static void saveDataToFile(){
         university.saveDataToFile();
     }
 
-    public static void manageInscriptions(Scanner scanner){
+
+    /*
+        Méthode  manageInscriptions(Scanner scanner) : Gère les inscriptions des étudiants aux cours.
+        Méthode appellée par la méthode main.
+
+        Input : Choix de l'utilisateur.
+        Retour : void.
+     */
+    private static void manageInscriptions(Scanner scanner){
         char menuInput;
         do {
             System.out.println("******************************************************");
@@ -87,7 +123,15 @@ public class Homework3 {
         while(menuInput != 'Q') ;
     }
 
-    public static boolean addInscription(Scanner scanner) {
+
+    /*
+        Méthode addInscription(Scanner scanner) : Ajoute une inscription .
+        Méthode appellée par la méthode manageInscriptions(Scanner scanner).
+
+        Input : Choix d'un étudiant à inscrire, choix d'un cours à inscrire.
+        Retour : True si l'inscription s'est effectuée avec succès; false sinon.
+     */
+    private static boolean addInscription(Scanner scanner) {
 
         boolean added = false;
 
@@ -113,7 +157,15 @@ public class Homework3 {
         return added;
     }
 
-    public static boolean removeInscription(Scanner scanner) {
+
+    /*
+        Méthode removeInscription(Scanner scanner) : Supprime une inscription d'un étudiant à un cours.
+        Méthode applée par la méthode manageInscriptions(Scanner scanner).
+
+        Input : Choix d'un étudiant à désinscrire, choix d'un cours à désinscrire.
+        Retour : true si la suppression s'est effectuée avec succès.
+     */
+    private static boolean removeInscription(Scanner scanner) {
 
         boolean removed = false;
 
@@ -141,7 +193,16 @@ public class Homework3 {
         return removed;
     }
 
-    public static void updateInscription(Scanner scanner) {
+
+    /*
+        Méthode updateInscription(Scanner scanner) : Met à jour une inscription.
+        Méthode applée par la méthode manageInscriptions(Scanner scanner).
+
+        Input : Selection d'un étudiant, d'un cours à désinscrire, sélection d'un
+                cours à inscrire.
+        Retour : void.
+     */
+    private static void updateInscription(Scanner scanner) {
         System.out.println("Sélection d'un étudiant");
         System.out.println("***********************");
         int studentIndex = Homework3.getStudentIndex(scanner);
@@ -173,7 +234,16 @@ public class Homework3 {
         }
     }
 
-    public static void showStudentsForCourse(Scanner scanner){
+
+    /*
+        Méthode showStudentsForCourse(Scanner scanner)
+        Affiche la liste des étudiants inscrits à un cours.
+        Méthode appelée par la méthode main.
+
+        Input : Index du cours.
+        Retour : void.
+     */
+    private static void showStudentsForCourse(Scanner scanner){
 
 
         int index = Homework3.getCourseIndex(scanner);
@@ -183,7 +253,16 @@ public class Homework3 {
 
     }
 
-    public static void showCoursesForStudent(Scanner scanner){
+
+    /*
+        Méthode showCoursesForStudent(Scanner scanner)
+        Affiche la liste des cours d'un certain étudiant.
+        Méthode appelée par la méthode main.
+
+        Input : Index de l'étudiant.
+        Retour : void.
+     */
+    private static void showCoursesForStudent(Scanner scanner){
 
         int index = Homework3.getStudentIndex(scanner);
         if (index >= 0) {
@@ -191,22 +270,29 @@ public class Homework3 {
         }
     }
 
-    public static int getStudentIndex(Scanner scanner) {
+
+    /*
+        Méthode getStudentIndex(Scanner scanner)
+
+        Input : Choix d'un étudiant.
+        Retour : Index de l'étudiant.
+     */
+    private static int getStudentIndex(Scanner scanner) {
 
         int studentInput = -1;
         //Scanner scanner = new Scanner(System.in);
 
-        if(university.students.size() > 0) {
+        if(university.getStudents().size() > 0) {
             boolean validInput;
 
             do {
-                for (int i = 0; i < university.students.size(); i++) {
-                    System.out.println("[" + i + "] " + university.students.get(i));
+                for (int i = 0; i < university.getStudents().size(); i++) {
+                    System.out.println("[" + i + "] " + university.getStudents().get(i));
                 }
-                System.out.println("\nVeuilez choisir un étudiant [0 à " + (university.students.size() - 1) + "] : ");
+                System.out.println("\nVeuillez choisir un étudiant [0 à " + (university.getStudents().size() - 1) + "] : ");
 
                 studentInput = scanner.nextInt();
-                if ((0 <= studentInput) && (studentInput < university.students.size())) {
+                if ((0 <= studentInput) && (studentInput < university.getStudents().size())) {
                     validInput = true;
                 } else {
                     System.out.println("ERREUR: Entrée invalide [" + studentInput + "]");
@@ -223,22 +309,29 @@ public class Homework3 {
         return studentInput;
     }
 
-    public static int getCourseIndex(Scanner scanner) {
+
+    /*
+        Méthode getCourseIndex(Scanner scanner)
+
+        Input : Choix d'un cours.
+        Retour : Index du cours.
+     */
+    private static int getCourseIndex(Scanner scanner) {
 
         int courseInput = -1;
         //Scanner scanner = new Scanner(System.in);
 
-        if(university.courses.size() > 0) {
+        if(university.getCourses().size() > 0) {
             boolean validInput;
 
             do {
-                for (int i = 0; i < university.courses.size(); i++) {
-                    System.out.println("[" + i + "] " + university.courses.get(i));
+                for (int i = 0; i < university.getCourses().size(); i++) {
+                    System.out.println("[" + i + "] " + university.getCourses().get(i));
                 }
-                System.out.println("\nVeuilez choisir un cours [0 à " + (university.courses.size() - 1) + "] : ");
+                System.out.println("\nVeuilez choisir un cours [0 à " + (university.getCourses().size() - 1) + "] : ");
 
                 courseInput = scanner.nextInt();
-                if ((0 <= courseInput) && (courseInput < university.courses.size())) {
+                if ((0 <= courseInput) && (courseInput < university.getCourses().size())) {
                     validInput = true;
                 } else {
                     System.out.println("ERREUR: Entrée invalide [" + courseInput + "]");
@@ -257,7 +350,7 @@ public class Homework3 {
 
 
 
-    public void generateData(){
+    private static void generateData(){
 
         Course INF1001 = new Course("INF1001", "Programmation Web", 4);
         Course INF1002 = new Course("INF1002", "Introduction à la programmation objet", 40);
